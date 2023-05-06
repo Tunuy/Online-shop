@@ -2,16 +2,108 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+
+import {BrowserRouter} from "react-router-dom";
+import { createStore } from 'redux'
+import { Provider } from 'react-redux';
+
+const defaultState = {
+  products:[{
+    name: "Apple Iphone 14",
+    color: "black",
+    image: "https://stylus.ua/thumbs/138x138/15/3a/2498981.jpeg",
+    price: 599,
+    incart: 1,
+    id: 1 
+  },
+  {
+     name: "Apple Iphone 14",
+    color: "product red",
+    image: "https://stylus.ua/thumbs/138x138/0a/2a/2531793.jpeg",
+    price: 699,
+    incart: 1,
+    id: 2
+  },
+  { 
+    name: "Apple Iphone 13",
+    color: "pink",
+    image: "https://stylus.ua/thumbs/138x138/51/19/2080470.png",
+    price: 599,
+    incart: 1,
+    id: 3
+},
+{ 
+    name: "Apple MacBook Air M1 13",
+    color: "space gray",
+    image: "https://stylus.ua/thumbs/138x138/b8/eb/1920922.jpeg",
+    price: 999,
+    incart: 1,
+    id: 4
+},
+{ 
+  name: "Apple MacBook Pro 13 M2",
+  color: "space gray",
+  image: "https://stylus.ua/thumbs/138x138/c3/0e/2389411.jpeg",
+  price: 1499,
+  incart: 1,
+  id: 5
+},
+{
+  name:"Apple Watch SE 2 40mm",
+  color: "Black",
+  image: "https://stylus.ua/thumbs/138x138/50/28/2499571.jpeg",
+  price:499,
+  incart: 1,
+  id: 6
+}],
+cartProducts: [],
+}
+
+const reducer = (state = defaultState,action)  => {
+ switch(action.type){
+  case "ADD_TO_CART":
+    return{...state, cartProducts: [...state.cartProducts,action.payload]};
+  
+    case "REMOVE_FROM_CART":
+      return {...state, cartProducts: state.cartProducts.filter((el) => el.id !== action.payload)}
+
+    case "INCREMENT_PRODUCT":
+    return{
+      ...state,
+      cartProducts:state.cartProducts.map((item) => {
+        if(item.id === action.payload.id){
+          item.incart += action.payload.increment
+        }
+        return item
+      })
+    }
+
+    case "DECREMENT_PRODUCT":
+    return{
+      ...state,
+      cartProducts:state.cartProducts.map((item) => {
+        if(item.id === action.payload.id){
+          item.incart -= action.payload.increment
+        }
+        return item
+      })
+    }
+ 
+    default:
+    return state
+ }
+}
+
+const store = createStore(reducer)
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
